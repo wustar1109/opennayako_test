@@ -7,9 +7,9 @@
 
 import { useState, useEffect, useRef } from 'react';
 
-const DEFAULT_NAME = 'Hanako';
+const DEFAULT_NAME = 'Vinci';
 const YUAN_AVATARS: Record<string, string> = {
-  hanako: 'Hanako.png',
+  hanako: 'Vinci.jpg',
   butter: 'Butter.png',
   ming: 'Ming.png',
 };
@@ -25,7 +25,7 @@ const YUAN_COLORS: Record<string, string> = {
 };
 
 export function SplashApp() {
-  const [avatarSrc, setAvatarSrc] = useState('assets/Hanako.png');
+  const [avatarSrc, setAvatarSrc] = useState('assets/Vinci.jpg');
   const [text, setText] = useState('');
   const [switching, setSwitching] = useState(false);
   const [symbol, setSymbol] = useState(YUAN_SYMBOLS.hanako);
@@ -59,10 +59,10 @@ export function SplashApp() {
           if (base) {
             setAvatarSrc(`${base}?t=${Date.now()}`);
           } else if (splashInfo?.yuan) {
-            setAvatarSrc(`assets/${YUAN_AVATARS[splashInfo.yuan] || 'Hanako.png'}`);
+            setAvatarSrc(`assets/${YUAN_AVATARS[splashInfo.yuan] || 'Vinci.jpg'}`);
           }
         } else if (splashInfo?.yuan) {
-          setAvatarSrc(`assets/${YUAN_AVATARS[splashInfo.yuan] || 'Hanako.png'}`);
+          setAvatarSrc(`assets/${YUAN_AVATARS[splashInfo.yuan] || 'Vinci.jpg'}`);
         }
 
         if (splashInfo?.agentName) name = splashInfo.agentName;

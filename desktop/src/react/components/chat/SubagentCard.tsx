@@ -60,7 +60,7 @@ export const SubagentCard = memo(function SubagentCard({ block }: SubagentCardPr
     const types = (window.t?.('yuan.types') || {}) as Record<string, { avatar?: string }>;
     const yuan = agent?.yuan || 'hanako';
     const entry = types[yuan] || types['hanako'];
-    return `assets/${entry?.avatar || 'Hanako.png'}`;
+    return `assets/${entry?.avatar || 'Vinci.jpg'}`;
   }, [agent?.yuan]);
   const avatarSrc = (agent?.hasAvatar && agentId)
     ? hanaUrl(`/api/agents/${agentId}/avatar?t=${agentId}`)

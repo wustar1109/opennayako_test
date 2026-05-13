@@ -863,7 +863,7 @@ function migrateVisionToImage(ctx) {
     }
     if (changed) {
       const header =
-        "# Hanako 供应商配置（全局，跨 agent 共享）\n" +
+        "# Vinci 供应商配置（全局，跨 agent 共享）\n" +
         "# 由设置页面管理\n\n";
       const yamlStr = header + YAML.dump(raw, {
         indent: 2,

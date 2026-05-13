@@ -18,7 +18,7 @@ const translations: Record<string, string | string[] | Record<string, { avatar: 
   'welcome.memoryOn': '记忆',
   'welcome.memoryOff': '此次聊天不参考记忆',
   'welcome.memoryDisabled': '记忆已关闭',
-  'yuan.types': { hanako: { avatar: 'Hanako.png' } },
+  'yuan.types': { hanako: { avatar: 'Vinci.jpg' } },
 };
 
 describe('WelcomeScreen workspace picker', () => {
@@ -31,7 +31,7 @@ describe('WelcomeScreen workspace picker', () => {
     useStore.setState({
       welcomeVisible: true,
       agents: [],
-      agentName: 'Hanako',
+      agentName: 'Vinci',
       agentAvatarUrl: null,
       agentYuan: 'hanako',
       currentAgentId: null,
@@ -69,7 +69,7 @@ describe('WelcomeScreen workspace picker', () => {
   it('disables the memory toggle when the selected agent has memory disabled in settings', async () => {
     useStore.setState({
       agents: [
-        { id: 'hana', name: 'Hanako', yuan: 'hanako', isPrimary: true, memoryMasterEnabled: false },
+        { id: 'hana', name: 'Vinci', yuan: 'hanako', isPrimary: true, memoryMasterEnabled: false },
       ],
       currentAgentId: 'hana',
       memoryEnabled: true,

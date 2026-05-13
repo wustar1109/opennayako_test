@@ -150,6 +150,7 @@
 .context-ring[data-yuan="hanako"] { --ring-fg: var(--accent); }
 .context-ring[data-yuan="butter"]  { --ring-fg: #5BA88C; }
 .context-ring[data-yuan="ming"]    { --ring-fg: #8BA4B4; }
+.context-ring[data-yuan="nayako"]  { --ring-fg: #B56A3C; }
 
 .context-ring-progress {
     transition: stroke-dashoffset 0.6s ease;

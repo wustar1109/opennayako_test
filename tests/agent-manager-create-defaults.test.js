@@ -223,6 +223,16 @@ describe("AgentManager.createAgent default skills.enabled", () => {
     expect(cfg.memory.enabled).toBe(false);
   });
 
+  it("accepts the image-design nayako yuan for newly created agents", async () => {
+    skillsMock._allSkills = [];
+
+    const { id: newId } = await mgr.createAgent({ name: "ImageAgent", yuan: "nayako" });
+
+    const cfgPath = path.join(agentsDir, newId, "config.yaml");
+    const cfg = YAML.load(fs.readFileSync(cfgPath, "utf-8"));
+    expect(cfg.agent.yuan).toBe("nayako");
+  });
+
   it("includes each agent memory master state in the agent list", async () => {
     fs.mkdirSync(path.join(agentsDir, "memory-off"), { recursive: true });
     fs.writeFileSync(

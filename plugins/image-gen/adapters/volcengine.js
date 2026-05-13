@@ -84,7 +84,7 @@ export const volcengineImageAdapter = {
       prompt: params.prompt,
       response_format: "b64_json",
       output_format: outputFormat,
-      size: resolveSize(params.size, params.aspect_ratio || params.aspectRatio, providerDefaults),
+      size: resolveSize(params.size || params.resolution, params.aspect_ratio || params.aspectRatio || params.ratio, providerDefaults),
     };
 
     // 5. Handle reference image (local path → base64 data URL)

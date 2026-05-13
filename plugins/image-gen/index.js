@@ -5,6 +5,7 @@ import { AdapterRegistry } from "./lib/adapter-registry.js";
 import { TaskStore } from "./lib/task-store.js";
 import { Poller } from "./lib/poller.js";
 import { volcengineImageAdapter } from "./adapters/volcengine.js";
+import { comfyuiImageAdapter } from "./adapters/comfyui.js";
 import { openaiImageAdapter } from "./adapters/openai.js";
 
 export default class ImageGenPlugin {
@@ -24,11 +25,14 @@ export default class ImageGenPlugin {
       generatedDir,
       log,
       registerSessionFile: this.ctx.registerSessionFile,
+      config: this.ctx.config,
+      pluginDir: this.ctx.pluginDir,
     });
 
     // Built-in adapters
     registry.register(volcengineImageAdapter);
     registry.register({ ...volcengineImageAdapter, id: "volcengine-coding" });
+    registry.register(comfyuiImageAdapter);
     registry.register(openaiImageAdapter);
 
     // Attach to ctx for tools

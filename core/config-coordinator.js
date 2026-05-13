@@ -318,7 +318,30 @@ export class ConfigCoordinator {
     const models = this._d.getModels();
     const synced = await models.syncAndRefresh();
     this.normalizeUtilityApiPreferences();
+    this.rebindDefaultModelFromAgentConfig();
     return synced;
+  }
+
+  /**
+   * Provider / model 文件可被热更新，而 defaultModel 只是运行时指针。
+   * 当 server 复用旧进程时，availableModels 可能已恢复，但 defaultModel 仍为 null；
+   * 此时按当前 agent 的 models.chat 重新绑定，避免新对话页显示未选/不可发送。
+   */
+  rebindDefaultModelFromAgentConfig() {
+    const models = this._d.getModels();
+    const chatRef = this._d.getAgent()?.config?.models?.chat;
+    const parsed = parseModelRef(chatRef);
+    if (!parsed?.id || !parsed.provider) return false;
+
+    const model = findModel(models.availableModels, parsed.id, parsed.provider);
+    if (!model) return false;
+    if (models.defaultModel?.id === model.id && models.defaultModel?.provider === model.provider) {
+      return false;
+    }
+
+    models.defaultModel = model;
+    log.log(`default model rebound from agent config: ${model.provider}/${model.id}`);
+    return true;
   }
 
   /**

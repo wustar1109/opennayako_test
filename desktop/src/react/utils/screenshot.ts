@@ -46,7 +46,7 @@ export async function takeScreenshot(targetMessageId: string, sessionPath: strin
 
   // 4. 填充角色名和头像（conversation 模式）
   if (payload.messages) {
-    const globalAgentName = state.agentName || 'Hanako';
+    const globalAgentName = state.agentName || 'Vinci';
     const userName = state.userName || '';
     const agentId = state.currentAgentId;
 

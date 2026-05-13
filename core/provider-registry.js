@@ -223,7 +223,7 @@ export class ProviderRegistry {
         if (Object.keys(overrides).length === 0) {
           delete cfg.models.overrides;
         }
-        const header = "# Hanako Agent 配置\n# 由设置页面管理，手动编辑也可以\n\n";
+        const header = "# Vinci Agent 配置\n# 由设置页面管理，手动编辑也可以\n\n";
         const yamlStr = header + YAML.dump(cfg, { indent: 2, lineWidth: -1, sortKeys: false, quotingType: '"', forceQuotes: false });
         fs.writeFileSync(cfgPath, yamlStr, "utf-8");
       }
@@ -258,7 +258,7 @@ export class ProviderRegistry {
     // 读取现有文件以保留 _migrated 等顶层元数据
     const existing = safeReadYAMLSync(ymlPath, {}, YAML) || {};
     const header =
-      "# Hanako 供应商配置（全局，跨 agent 共享）\n" +
+      "# Vinci 供应商配置（全局，跨 agent 共享）\n" +
       "# 由设置页面管理\n\n";
     const data = { ...existing, providers };
     const yamlStr = header + YAML.dump(data, {

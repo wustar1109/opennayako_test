@@ -304,7 +304,7 @@ export class AgentManager {
     if (!configSeed || typeof configSeed !== "object" || Array.isArray(configSeed)) {
       throw new Error("Invalid config.example.yaml");
     }
-    const VALID_YUAN = ["hanako", "butter", "ming", "kong"];
+    const VALID_YUAN = ["hanako", "butter", "ming", "nayako", "kong"];
     const yuanType = VALID_YUAN.includes(yuan) ? yuan : "hanako";
     const config = configSeed;
     config.agent = { ...(config.agent || {}), name: name.trim(), yuan: yuanType };

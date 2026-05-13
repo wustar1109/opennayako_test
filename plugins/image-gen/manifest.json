@@ -2,7 +2,7 @@
   "id": "image-gen",
   "name": "Image Generation",
   "version": "0.1.0",
-  "description": "图片生成：火山引擎 Seedream、OpenAI GPT Image",
+  "description": "图片生成：火山引擎 Seedream、OpenAI GPT Image、ComfyUI workflow",
   "trust": "full-access",
   "hidden": true,
   "contributes": {
@@ -19,6 +19,25 @@
         "providerDefaults": {
           "type": "object",
           "title": "per-provider 默认参数"
+        },
+        "comfyui": {
+          "type": "object",
+          "title": "ComfyUI 配置",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "mock": { "type": "boolean" },
+            "baseUrl": { "type": "string" },
+            "workflowPath": { "type": "string" },
+            "timeoutSeconds": { "type": "number" }
+          }
+        },
+        "comfyuiBaseUrl": {
+          "type": "string",
+          "title": "ComfyUI Base URL"
+        },
+        "comfyuiWorkflowPath": {
+          "type": "string",
+          "title": "ComfyUI workflow JSON path"
         }
       }
     }

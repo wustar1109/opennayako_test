@@ -42,15 +42,19 @@ export class Poller {
  *   generatedDir: string,
  *   log: object,
  *   registerSessionFile?: Function,
+ *   config?: object,
+ *   pluginDir?: string,
  * }} opts
  */
-  constructor({ store, registry, bus, generatedDir, log, registerSessionFile }) {
+  constructor({ store, registry, bus, generatedDir, log, registerSessionFile, config, pluginDir }) {
     this._store        = store;
     this._registry     = registry;
     this._bus          = bus;
     this._generatedDir = generatedDir;
     this._log          = log;
     this._registerSessionFile = registerSessionFile || null;
+    this._config = config || null;
+    this._pluginDir = pluginDir || null;
 
     /** @type {Set<string>} taskIds being tracked */
     this._active    = new Set();
@@ -249,6 +253,8 @@ export class Poller {
       generatedDir: this._generatedDir,
       bus: this._bus,
       log: this._log,
+      config: this._config,
+      pluginDir: this._pluginDir,
     };
 
     let result;

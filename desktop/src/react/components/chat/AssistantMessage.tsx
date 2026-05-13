@@ -35,7 +35,7 @@ interface Props {
 
 export const AssistantMessage = memo(function AssistantMessage({ message, showAvatar, sessionPath, agentId, readOnly = false }: Props) {
   const agents = useStore(s => s.agents);
-  const globalAgentName = useStore(s => s.agentName) || 'Hanako';
+  const globalAgentName = useStore(s => s.agentName) || 'Vinci';
   const globalYuan = useStore(s => s.agentYuan) || 'hanako';
   const isStreaming = useStore(s => selectIsStreamingSession(s, sessionPath));
   const selectedIds = useStore(s => selectSelectedIdsBySession(s, sessionPath));
@@ -49,7 +49,7 @@ export const AssistantMessage = memo(function AssistantMessage({ message, showAv
   const fallbackAvatar = useMemo(() => {
     const types = (window.t?.('yuan.types') || {}) as Record<string, { avatar?: string }>;
     const entry = types[displayYuan] || types['hanako'];
-    return `assets/${entry?.avatar || 'Hanako.png'}`;
+    return `assets/${entry?.avatar || 'Vinci.jpg'}`;
   }, [displayYuan]);
   const avatarSrc = (agent?.hasAvatar && agentId)
     ? hanaUrl(`/api/agents/${agentId}/avatar?t=${agentId}`)

@@ -33,9 +33,11 @@ export async function loadModels(): Promise<void> {
     const activeModel = data.activeModel;
     let models = data.models || [];
 
-    // 非 pending 状态：用 session 实际绑定的 model 重写 isCurrent 标记
-    // pending 状态：保持 API 返回的 isCurrent（跟 agent Chat model 走）
-    if (!pendingNewSession && activeModel) {
+    // 非 pending 状态：用 session 实际绑定的 model 重写 isCurrent 标记。
+    // pending 状态正常跟 agent Chat model 走；但旧 server 复用/热刷新后可能出现
+    // current=null、activeModel 有值的短暂不一致，用 activeModel 兜底，避免 UI 卡成未选模型。
+    const hasApiCurrent = models.some((m: any) => m.isCurrent);
+    if (activeModel && (!pendingNewSession || !hasApiCurrent)) {
       models = models.map((m: any) => ({
         ...m,
         isCurrent: m.id === activeModel.id && m.provider === activeModel.provider,

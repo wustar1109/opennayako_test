@@ -98,7 +98,7 @@ export async function initApp(): Promise<void> {
 
     // 4. 应用 agent 身份
     await applyAgentIdentity({
-      agentName: healthData.agent || 'Hanako',
+      agentName: healthData.agent || 'Vinci',
       userName: healthData.user || t('common.user'),
       ui: { avatars: false, agents: false, welcome: true },
     });

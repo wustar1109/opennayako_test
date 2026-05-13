@@ -251,7 +251,7 @@
     "types": {
       "hanako": {
         "label": "Balanced assistant",
-        "avatar": "Hanako.png"
+        "avatar": "Vinci.jpg"
       },
       "butter": {
         "label": "More expressive",
@@ -260,6 +260,10 @@
       "ming": {
         "label": "More dependable",
         "avatar": "Ming.png"
+      },
+      "nayako": {
+        "label": "Image design",
+        "avatar": "Vinci.jpg"
       },
       "kong": {
         "label": "Vanilla",
@@ -291,6 +295,12 @@
         "They verified last time's conclusion again",
         "{name} thinks your reasoning that day was sharp",
         "{name} organized their thoughts while waiting for the coffee to cool"
+      ],
+      "nayako": [
+        "{name} is turning the idea into a visual direction",
+        "{name} is checking composition and light",
+        "A new prompt draft is taking shape",
+        "{name} is choosing a steadier image direction"
       ]
     },
     "welcome": {
@@ -306,11 +316,17 @@
         "{name} is ready",
         "What needs handling?",
         "Go ahead, {name} is listening"
+      ],
+      "nayako": [
+        "What image are we making?",
+        "{name} is ready to write the prompt",
+        "Give me an idea, and I will turn it into an image direction"
       ]
     },
     "placeholder": {
       "butter": "Say whatever's on your mind...",
-      "ming": "Go ahead..."
+      "ming": "Go ahead...",
+      "nayako": "Describe the image you want..."
     }
   },
   "thinking": {
@@ -705,14 +721,14 @@
       "updateChecking": "Checking for updates…",
       "updateDownloading": "{agentName} is preparing a new home {percent}%",
       "updateReadyInstall": "v{version} ready to install",
-      "updateInstalling": "Installing update. Hanako will restart automatically…",
+      "updateInstalling": "Installing update. Vinci will restart automatically…",
       "updateInstallManualHint": "Install after clicking Restart to update; quitting will not install automatically",
       "updateInstall": "Restart to update",
       "updateProgress": "{percent}%",
       "updateError": "Update check failed",
       "updateLatest": "You're up to date",
       "updateCheckBtn": "Check for updates",
-      "updateNeedInstall": "Please move Hanako to the Applications folder first",
+      "updateNeedInstall": "Please move Vinci to the Applications folder first",
       "updateDiskSpace": "Not enough disk space to download update",
       "betaUpdates": "Receive beta updates",
       "autoCheckUpdates": "Check for updates automatically"
@@ -1539,7 +1555,7 @@
     "skillMissingName": "Missing name field in SKILL.md",
     "skillNameInvalid": "Invalid skill name (\"{name}\"). Only letters, numbers, underscores, and hyphens are allowed.",
     "skillPathMustBeAbsolute": "Path must be absolute: {path}",
-    "skillCannotAddSelfDir": "Cannot add Hanako's own skills directory",
+    "skillCannotAddSelfDir": "Cannot add Vinci's own skills directory",
     "skillInvalidName": "Invalid skill name",
     "skillExternalCannotDelete": "External skills cannot be deleted from here",
     "skillNotExists": "Skill does not exist",
@@ -1703,7 +1719,7 @@
   },
   "main": {
     "tray": {
-      "show": "Show Hanako",
+      "show": "Show Vinci",
       "settings": "Settings",
       "quit": "Quit"
     },
@@ -1711,17 +1727,17 @@
       "selectFolder": "Select Working Folder",
       "selectSkill": "Select Skill",
       "selectPlugin": "Select Plugin",
-      "launchFailedTitle": "Hanako Launch Failed",
-      "launchFailedBody": "Hanako v{version}\n\n{detail}\n\nDetailed log saved to:\n{logPath}\n\nPlease send this screenshot or log file to the developer.",
-      "serverRestartFailed": "Hanako v{version}\n\nServer crashed and failed to restart.\n{error}\n\nPlease restart the application.",
-      "serverMultipleCrash": "Hanako v{version}\n\nServer crashed multiple times ({reason}).\n\nPlease restart the application.",
+      "launchFailedTitle": "Vinci Launch Failed",
+      "launchFailedBody": "Vinci v{version}\n\n{detail}\n\nDetailed log saved to:\n{logPath}\n\nPlease send this screenshot or log file to the developer.",
+      "serverRestartFailed": "Vinci v{version}\n\nServer crashed and failed to restart.\n{error}\n\nPlease restart the application.",
+      "serverMultipleCrash": "Vinci v{version}\n\nServer crashed multiple times ({reason}).\n\nPlease restart the application.",
       "serverStartTimeout": "Server start timed out (60s)",
       "serverKilledBySignal": "Server killed by signal ({signal})",
       "serverExitedWithCode": "Server exited with code {code}",
-      "serverFilesNotReady": "Auto-update just completed; new version files still landing on disk (missing {missing}). Waited {waited}s without success. Please restart Hanako shortly.",
-      "serverModuleMissing": "Server startup failed: cannot find module {module}.\nThis typically happens right after an auto-update, while new files are still being written to disk.\nRecommendation: wait 1-2 minutes and restart Hanako. Report on GitHub if it persists.",
-      "installFailedTitle": "Hanako Update",
-      "installFailedBody": "Update installation failed:\n{error}\n\nPlease restart Hanako and try again, or check for updates manually in Settings."
+      "serverFilesNotReady": "Auto-update just completed; new version files still landing on disk (missing {missing}). Waited {waited}s without success. Please restart Vinci shortly.",
+      "serverModuleMissing": "Server startup failed: cannot find module {module}.\nThis typically happens right after an auto-update, while new files are still being written to disk.\nRecommendation: wait 1-2 minutes and restart Vinci. Report on GitHub if it persists.",
+      "installFailedTitle": "Vinci Update",
+      "installFailedBody": "Update installation failed:\n{error}\n\nPlease restart Vinci and try again, or check for updates manually in Settings."
     },
     "notification": {
       "ready": "Notifications enabled"
@@ -1898,7 +1914,7 @@
     },
     "updateSettings": {
       "label": "Settings",
-      "description": "Modify Hanako's settings. Two actions available:\n- search + query: Search settings by keyword, see current values and options\n- apply + key + value: Change a setting (requires user confirmation)\n\nIf you already know the exact key, you can apply directly.",
+      "description": "Modify Vinci's settings. Two actions available:\n- search + query: Search settings by keyword, see current values and options\n- apply + key + value: Change a setting (requires user confirmation)\n\nIf you already know the exact key, you can apply directly.",
       "actionDesc": "Action: search to find settings / apply to change a setting",
       "queryDesc": "Search keyword (required for search)",
       "keyDesc": "Setting key (found via search)",
@@ -1985,7 +2001,7 @@
     "inputHelp": "Type /help to see commands"
   },
   "sandbox": {
-    "blocked": "[Security] {reason}\n\nThis operation was blocked by Hanako's sandbox security policy. This means the command crossed a path or permission boundary. Check the current workspace, the exact path syntax, and whether the target file belongs in an allowed workspace or session path. Explain the blocked path and reason to the user; discuss changing sandbox settings only if the user explicitly decides to do that.",
+    "blocked": "[Security] {reason}\n\nThis operation was blocked by Vinci's sandbox security policy. This means the command crossed a path or permission boundary. Check the current workspace, the exact path syntax, and whether the target file belongs in an allowed workspace or session path. Explain the blocked path and reason to the user; discuss changing sandbox settings only if the user explicitly decides to do that.",
     "noSudo": "sudo is not allowed",
     "noSu": "su user switching is not allowed",
     "noChmod": "Changing file permissions is not allowed",

@@ -1,0 +1,22 @@
+{
+  "positive_prompt_node": {
+    "inputs": {
+      "text": "{{prompt}}"
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "negative_prompt_node": {
+    "inputs": {
+      "text": "{{negative_prompt}}"
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "latent_node": {
+    "inputs": {
+      "width": "{{width}}",
+      "height": "{{height}}",
+      "batch_size": "{{count}}"
+    },
+    "class_type": "EmptyLatentImage"
+  }
+}

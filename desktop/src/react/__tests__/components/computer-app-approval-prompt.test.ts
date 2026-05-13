@@ -147,8 +147,8 @@ function seedSession() {
         kind: 'computer_app_approval',
         surface: 'input',
         status: 'pending',
-        title: '允许 Hana 使用电脑',
-        body: 'Hana 想控制这个应用来继续当前任务。',
+        title: '允许 Vinci 使用电脑',
+        body: 'Vinci 想控制这个应用来继续当前任务。',
         subject: { label: 'Mock Notes', detail: 'mock · app.notes' },
         severity: 'elevated',
         actions: { confirmLabel: '同意', rejectLabel: '拒绝' },
@@ -168,8 +168,8 @@ describe('computer app approval prompt', () => {
   it('renders the current session pending input confirmation above the input box and posts confirmation', async () => {
     render(React.createElement(InputArea));
 
-    expect(screen.getByText('是否允许 Hana 控制 Mock Notes')).toBeTruthy();
-    expect(screen.queryByText('Hana 想控制这个应用来继续当前任务。')).toBeNull();
+    expect(screen.getByText('是否允许 Vinci 控制 Mock Notes')).toBeTruthy();
+    expect(screen.queryByText('Vinci 想控制这个应用来继续当前任务。')).toBeNull();
 
     fireEvent.click(screen.getByRole('button', { name: '同意' }));
 
@@ -188,7 +188,7 @@ describe('computer app approval prompt', () => {
       kind: 'tool_action_approval',
       surface: 'input',
       status: 'pending',
-      title: '允许 Hana 执行这次操作',
+      title: '允许 Vinci 执行这次操作',
       body: '当前会话处于先问模式，这次操作会改变本地或外部状态。',
       subject: { label: 'computer', detail: 'action: list_apps' },
       severity: 'elevated',
@@ -237,7 +237,7 @@ describe('computer app approval prompt', () => {
       kind: 'tool_action_approval',
       surface: 'input',
       status: 'pending',
-      title: '允许 Hana 执行这次操作',
+      title: '允许 Vinci 执行这次操作',
       body: '当前会话处于先问模式，这次操作会改变本地或外部状态。',
       subject: { label: 'write', detail: 'path: note.md' },
       severity: 'elevated',
@@ -281,7 +281,7 @@ describe('computer app approval prompt', () => {
       kind: 'tool_action_approval',
       surface: 'input',
       status: 'pending',
-      title: '允许 Hana 执行这次操作',
+      title: '允许 Vinci 执行这次操作',
       body: '当前会话处于先问模式，这次操作会改变本地或外部状态。',
       subject: { label: 'write', detail: 'path: note.md' },
       severity: 'elevated',
@@ -305,7 +305,7 @@ describe('computer app approval prompt', () => {
       kind: 'computer_app_approval',
       surface: 'input',
       status: 'pending',
-      title: '允许 Hana 使用电脑',
+      title: '允许 Vinci 使用电脑',
       subject: { label: 'Mock Notes', detail: 'mock · app.notes' },
       severity: 'elevated',
       actions: { confirmLabel: '同意', rejectLabel: '拒绝' },
@@ -406,7 +406,7 @@ describe('computer app approval prompt', () => {
             kind: 'computer_app_approval',
             surface: 'input',
             status: 'pending',
-            title: '允许 Hana 使用电脑',
+            title: '允许 Vinci 使用电脑',
           },
           { type: 'text', html: '<p>正文还在这里</p>' },
         ],
@@ -415,7 +415,7 @@ describe('computer app approval prompt', () => {
       sessionPath: '/session/a.jsonl',
     }));
 
-    expect(screen.queryByText('允许 Hana 使用电脑')).toBeNull();
+    expect(screen.queryByText('允许 Vinci 使用电脑')).toBeNull();
     expect(screen.getByText('正文还在这里')).toBeTruthy();
   });
 });

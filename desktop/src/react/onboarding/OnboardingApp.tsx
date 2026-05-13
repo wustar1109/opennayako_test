@@ -17,10 +17,11 @@ export function OnboardingApp({ preview, skipToTutorial }: OnboardingAppProps) {
   const [serverToken, setServerToken] = useState<string | null>(null);
   const [step, setStep] = useState(skipToTutorial ? 6 : 0);
   const [stepKey, setStepKey] = useState(0);
-  const [agentName, setAgentName] = useState('Hanako');
-  const [avatarSrc, setAvatarSrc] = useState('assets/Hanako.png');
+  const [agentName, setAgentName] = useState('Vinci');
+  const [avatarSrc, setAvatarSrc] = useState('assets/Vinci.jpg');
   const [locale, setLocale] = useState('zh-CN');
   const [i18nReady, setI18nReady] = useState(false);
+  const [hasDesktopBridge, setHasDesktopBridge] = useState(() => Boolean(window.hana));
 
   // Provider info passed from ProviderStep to ModelStep
   const [providerName, setProviderName] = useState('');
@@ -30,8 +31,13 @@ export function OnboardingApp({ preview, skipToTutorial }: OnboardingAppProps) {
 
   const [toastMsg, setToastMsg] = useState('');
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const effectivePreview = preview || !hasDesktopBridge;
 
   const hanaFetch: HanaFetch = useCallback((path, opts = {}) => {
+    if (!serverPort) {
+      return Promise.reject(new Error('Vinci API is only available after the desktop bridge is ready.'));
+    }
+
     const headers: Record<string, string> = { ...(opts.headers as Record<string, string>) };
     if (serverToken) headers['Authorization'] = `Bearer ${serverToken}`;
     return fetch(`http://127.0.0.1:${serverPort}${path}`, { ...opts, headers });
@@ -65,20 +71,34 @@ export function OnboardingApp({ preview, skipToTutorial }: OnboardingAppProps) {
   useEffect(() => {
     (async () => {
       try {
-        const port = await window.hana.getServerPort();
-        const token = await window.hana.getServerToken();
+        const hana = window.hana as typeof window.hana | undefined;
+        if (!hana) {
+          setHasDesktopBridge(false);
+          const loc = navigator.language || 'zh-CN';
+          const name = 'Vinci';
+          setLocale(loc);
+          setAgentName(name);
+          await i18n.load(loc);
+          i18n.defaultName = name;
+          setI18nReady(true);
+          return;
+        }
+
+        setHasDesktopBridge(true);
+        const port = await hana.getServerPort();
+        const token = await hana.getServerToken();
         setServerPort(port);
         setServerToken(token);
-        const splashInfo = await window.hana.getSplashInfo?.();
+        const splashInfo = await hana.getSplashInfo?.();
         const loc = splashInfo?.locale || 'zh-CN';
-        const name = splashInfo?.agentName || 'Hanako';
+        const name = splashInfo?.agentName || 'Vinci';
         setLocale(loc);
         setAgentName(name);
         await i18n.load(loc);
         i18n.defaultName = name;
         setI18nReady(true);
         try {
-          const localPath = await window.hana.getAvatarPath?.('agent');
+          const localPath = await hana.getAvatarPath?.('agent');
           if (localPath) setAvatarSrc(window.platform?.getFileUrl?.(localPath) ?? '');
         } catch { /* ignore */ }
       } catch (err) {
@@ -97,13 +117,13 @@ export function OnboardingApp({ preview, skipToTutorial }: OnboardingAppProps) {
         ))}
       </div>
 
-      {step === 0 && <LocaleStep key={`step-0-${stepKey}`} preview={preview} hanaFetch={hanaFetch} avatarSrc={avatarSrc} initialLocale={locale} goToStep={goToStep} showError={showError} onLocaleChange={onLocaleChange} />}
-      {step === 1 && <NameStep key={`step-1-${stepKey}`} preview={preview} hanaFetch={hanaFetch} goToStep={goToStep} showError={showError} />}
-      {step === 2 && <ProviderStep key={`step-2-${stepKey}`} preview={preview} hanaFetch={hanaFetch} goToStep={goToStep} showError={showError} onProviderReady={onProviderReady} />}
-      {step === 3 && <ModelStep key={`step-3-${stepKey}`} preview={preview} hanaFetch={hanaFetch} providerName={providerName} providerUrl={providerUrl} providerApi={providerApi} apiKey={apiKey} goToStep={goToStep} showError={showError} />}
+      {step === 0 && <LocaleStep key={`step-0-${stepKey}`} preview={effectivePreview} hanaFetch={hanaFetch} avatarSrc={avatarSrc} initialLocale={locale} goToStep={goToStep} showError={showError} onLocaleChange={onLocaleChange} />}
+      {step === 1 && <NameStep key={`step-1-${stepKey}`} preview={effectivePreview} hanaFetch={hanaFetch} goToStep={goToStep} showError={showError} />}
+      {step === 2 && <ProviderStep key={`step-2-${stepKey}`} preview={effectivePreview} hanaFetch={hanaFetch} goToStep={goToStep} showError={showError} onProviderReady={onProviderReady} />}
+      {step === 3 && <ModelStep key={`step-3-${stepKey}`} preview={effectivePreview} hanaFetch={hanaFetch} providerName={providerName} providerUrl={providerUrl} providerApi={providerApi} apiKey={apiKey} goToStep={goToStep} showError={showError} />}
       {step === 4 && <ThemeStep key={`step-4-${stepKey}`} goToStep={goToStep} />}
-      {step === 5 && <WorkspaceStep key={`step-5-${stepKey}`} preview={preview} hanaFetch={hanaFetch} goToStep={goToStep} showError={showError} />}
-      {step === 6 && <TutorialStep key={`step-6-${stepKey}`} preview={preview} showError={showError} />}
+      {step === 5 && <WorkspaceStep key={`step-5-${stepKey}`} preview={effectivePreview} hanaFetch={hanaFetch} goToStep={goToStep} showError={showError} />}
+      {step === 6 && <TutorialStep key={`step-6-${stepKey}`} preview={effectivePreview} showError={showError} />}
 
       {toastMsg && (
         <div style={{ position: 'fixed', bottom: 20, left: '50%', transform: 'translateX(-50%)', background: 'var(--coral, #c66)', color: '#fff', padding: '8px 20px', borderRadius: 8, fontSize: '0.82rem', zIndex: 999 }}>

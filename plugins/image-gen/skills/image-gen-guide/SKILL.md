@@ -1,53 +1,63 @@
 ---
 name: image-gen-guide
-description: 使用图片/视频生成工具时必读。包含工具参数、非阻塞工作流、任务路由。
+description: Use before image or video generation. Covers tool parameters, non-blocking generation, provider routing, and result handling.
 ---
 
-# 媒体生成工具指南
+# Media Generation Tool Guide
 
-## 非阻塞工作流
+Image and video generation is asynchronous. The tool returns a card immediately; generated media is registered into the current session when the background task completes.
 
-生成是异步的。提交后工具立即返回一张卡片，你**不需要等待结果**，也**不需要调用 stage_files**。图片/视频文件由 image-gen 插件在后台完成时登记为 SessionFile；卡片只呈现任务状态和结果引用，文件生命周期仍归 StageFile 管。
+## Non-Blocking Workflow
 
-1. 调用工具，传入 prompt 和参数
-2. **告诉用户正在生成，完成后会自动显示在卡片中**
-3. **继续对话**，不要等待
-4. 收到 `<hana-background-result>` 通知时，自然地告知用户结果
+1. Call the generation tool with a complete prompt and parameters.
+2. Tell the user the task has started and the result will appear in the card automatically.
+3. Continue the conversation. Do not wait for completion.
+4. When a background result notification arrives, summarize the result naturally.
 
-## 工具参数
+## `image-gen_generate-image`
 
-### image-gen_generate-image
+Use for text-to-image, image-to-image, reference redesign, and style transfer.
 
-- `prompt`（必填）：图片描述，中英文均可
-- `count`：并发生成张数（1-9），用户说"多来几张"/"再抽几张"时用
-- `image`：参考图路径（图生图、图片编辑、风格迁移时传入）
-- `ratio`：长宽比（1:1, 16:9, 9:16, 4:3, 3:4, 3:2, 2:3, 21:9）
-- `resolution`：分辨率（2k, 4k）
-- `quality`：画质（low, medium, high）
-- `provider`：指定 provider（可选，默认自动选择）
+Parameters:
 
-### image-gen_generate-video
+- `prompt`: required. Complete image prompt.
+- `count`: number of images, 1 to 9.
+- `image`: local reference image path for image-to-image or editing.
+- `ratio`: `1:1`, `16:9`, `9:16`, `4:3`, `3:4`, `3:2`, `2:3`, or `21:9`.
+- `resolution`: `2k` or `4k` when supported.
+- `model`: provider-specific model id or version.
+- `negative_prompt`: optional negative prompt, mainly used by workflow providers such as ComfyUI.
+- `provider`: optional provider id. Use `comfyui` when the user asks for ComfyUI, local workflow, or z-image.
 
-- `prompt`（必填）：视频描述，中英文均可
-- `image`：参考图路径（图生视频）
-- `duration`：时长（秒）
-- `ratio`：长宽比
-- `provider`：指定 provider（可选）
+## `image-gen_generate-video`
 
-## 任务路由
+Use for text-to-video and image-to-video.
 
-| 用户意图 | 示例 | 工具 | 备注 |
-|---------|------|------|------|
-| 凭空生成图片 | "画一只猫" | generate-image | prompt 描述画面 |
-| 编辑/修改图片 | "把帽子去掉" | generate-image + image 参数 | prompt 写编辑指令 |
-| 参考图生新图 | "参考这个风格画一套icon" | generate-image + image 参数 | prompt 说明参考什么 + 要生成什么 |
-| 生成视频 | "做一个猫的短视频" | generate-video | prompt 描述画面和运动 |
-| 图片变视频 | "让这张图动起来" | generate-video + image 参数 | prompt 描述运动和变化 |
-| 不是生成请求 | "这张图画的是什么" | 不调用 | 只是看图/聊天 |
+Parameters:
 
-## 注意
+- `prompt`: required. Complete video prompt with camera motion and temporal changes.
+- `image`: local reference image path for image-to-video.
+- `duration`: seconds.
+- `ratio`: target aspect ratio.
+- `model`: provider-specific model id or version.
+- `provider`: optional provider id.
 
-- 生成消耗 provider 额度，大批量前建议提醒用户
-- 不同 provider 支持的参数不同，工具会自动处理
-- 视频生成通常比图片慢（几十秒到几分钟），但同样不阻塞
-- 图中需要出现文字时，把文字内容放在**双引号**里
+## Routing
+
+- Plain image request: `image-gen_generate-image`.
+- Edit or transform an attached image: `image-gen_generate-image` with `image`.
+- Generate multiple variations: `image-gen_generate-image` with `count`.
+- Animate an image: `image-gen_generate-video` with `image`.
+- ComfyUI or workflow-backed generation: `image-gen_generate-image` with `provider: "comfyui"`.
+- Image analysis or discussion only: do not call generation.
+
+## Prompt Quality
+
+Before calling generation, make the prompt explicit enough for a model:
+
+- subject, scene, composition, shot, lighting, material, style, atmosphere
+- use case and aspect ratio
+- quality constraints and forbidden elements
+- exact quoted text only when the user asked for text in the image
+
+Avoid passing a vague one-line request directly when the user expects a designed result.

@@ -1,5 +1,5 @@
 /**
- * Hanako Server — HTTP + WebSocket API
+ * Vinci Server — HTTP + WebSocket API
  *
  * 启动方式：
  *   node server/index.js              （独立运行）
@@ -82,9 +82,9 @@ try {
 } catch {}
 
 // ── 初始化引擎 ──
-console.log("[server] ② 创建 HanaEngine...");
+console.log("[server] ② 创建 VinciEngine...");
 const engine = new HanaEngine({ hanakoHome, productDir });
-console.log("[server] ② HanaEngine 构造完成，开始 init...");
+console.log("[server] ② VinciEngine 构造完成，开始 init...");
 await engine.init((msg) => console.log(`[server] ${msg}`));
 console.log("[server] ② engine.init 完成");
 dlog.log("server", "engine initialized");
@@ -574,7 +574,7 @@ try {
   const address = server.address();
   const actualPort = address.port;
 
-  console.log(`[server] Hanako Server 运行在 http://${host}:${actualPort}`);
+console.log(`[server] Vinci Server 运行在 http://${host}:${actualPort}`);
   dlog.log("server", `listening on :${actualPort}`);
 
   // 写 server-info 文件，供 Electron 检测复用或外部工具查询

@@ -18,7 +18,7 @@ function getUserDataAppName(hanakoHome, defaultHome) {
     return null;
   }
   const suffix = path.basename(hanakoHome).replace(/^\./, "");
-  if (!suffix) return "Hanako";
+  if (!suffix) return "Vinci";
   return suffix.charAt(0).toUpperCase() + suffix.slice(1);
 }
 

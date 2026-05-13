@@ -81,7 +81,7 @@ function seedDefaultAgent(agentsDir, productDir) {
   fs.mkdirSync(path.join(agentDir, "avatars"), { recursive: true });
   fs.mkdirSync(path.join(agentDir, "desk"), { recursive: true });
 
-  // config.yaml（保持模板默认值：name=Hanako, yuan=hanako）
+  // config.yaml（保持模板默认值：name=Vinci, yuan=hanako）
   const cfgDest = path.join(agentDir, "config.yaml");
   const configSrc = path.join(productDir, "config.example.yaml");
   if (fs.existsSync(configSrc)) {
@@ -123,7 +123,7 @@ function seedDefaultAgent(agentsDir, productDir) {
   if (identitySrc) {
     const tmpl = fs.readFileSync(identitySrc, "utf-8");
     const filled = tmpl
-      .replace(/\{\{agentName\}\}/g, "Hanako")
+      .replace(/\{\{agentName\}\}/g, "Vinci")
       .replace(/\{\{userName\}\}/g, "");
     fs.writeFileSync(path.join(agentDir, "identity.md"), filled, "utf-8");
   }

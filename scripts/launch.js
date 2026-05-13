@@ -5,8 +5,9 @@
  */
 import { spawn } from "node:child_process";
 import { homedir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { createRequire } from "node:module";
+import { setTimeout as delay } from "node:timers/promises";
 
 const require = createRequire(import.meta.url);
 process.env.HANA_HOME = join(homedir(), ".hanako-dev");
@@ -18,6 +19,7 @@ const mode = process.argv[2];
 const extra = process.argv.slice(3);
 
 let bin, args;
+let rendererDev = null;
 switch (mode) {
   case "electron":
     bin = require("electron");
@@ -29,6 +31,7 @@ switch (mode) {
     break;
   case "electron-vite":
     process.env.VITE_DEV_URL = "http://localhost:5173";
+    rendererDev = await ensureRendererDevServer(process.env.VITE_DEV_URL);
     bin = require("electron");
     args = [".", "--dev", ...extra];
     break;
@@ -51,4 +54,49 @@ switch (mode) {
 delete process.env.ELECTRON_RUN_AS_NODE;
 
 const child = spawn(bin, args, { stdio: "inherit", env: process.env });
-child.on("exit", (code) => process.exit(code ?? 1));
+child.on("exit", (code) => {
+  if (rendererDev && !rendererDev.killed) rendererDev.kill();
+  process.exit(code ?? 1);
+});
+
+async function ensureRendererDevServer(devUrl) {
+  const readinessUrl = new URL("onboarding.html", `${devUrl.replace(/\/$/, "")}/`).href;
+  if (await isRendererReady(readinessUrl)) return null;
+
+  console.log(`[desktop] Starting renderer Vite dev server at ${devUrl}...`);
+  const viteBin = join(dirname(require.resolve("vite/package.json")), "bin", "vite.js");
+  const vite = spawn(process.execPath, [viteBin, "--config", "vite.config.ts"], {
+    stdio: "inherit",
+    env: { ...process.env, BROWSER: "none" },
+  });
+
+  let exitCode = null;
+  vite.on("exit", (code) => {
+    exitCode = code ?? 0;
+  });
+
+  const deadline = Date.now() + 30_000;
+  while (Date.now() < deadline) {
+    if (await isRendererReady(readinessUrl)) return vite;
+    if (exitCode !== null) {
+      throw new Error(`Renderer Vite dev server exited before startup (code ${exitCode}).`);
+    }
+    await delay(250);
+  }
+
+  vite.kill();
+  throw new Error(`Renderer Vite dev server did not become ready at ${readinessUrl}.`);
+}
+
+async function isRendererReady(url) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 1000);
+  try {
+    const res = await fetch(url, { signal: controller.signal });
+    return res.ok;
+  } catch {
+    return false;
+  } finally {
+    clearTimeout(timeout);
+  }
+}

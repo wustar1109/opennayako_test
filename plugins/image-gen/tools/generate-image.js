@@ -7,7 +7,13 @@ import path from "node:path";
 
 export const name = "generate-image";
 export const description =
-  "根据文字描述生成图片。非阻塞：提交后立即返回，完成后自动通知。";
+  "根据文字描述生成图片。非阻塞：提交后立即返回，完成后自动通知。生成前应先把用户需求优化成完整图像提示词。";
+
+export const promptGuidelines = [
+  "Before calling this tool, expand vague image requests into a concrete visual prompt covering subject, composition, shot, lighting, material, style, atmosphere, and quality constraints.",
+  "Use negative_prompt for workflow providers such as ComfyUI when forbidden elements matter.",
+  "Use provider=\"comfyui\" when the user asks for ComfyUI, a local workflow, or z-image.",
+].join("\n");
 
 export const parameters = {
   type: "object",
@@ -18,6 +24,7 @@ export const parameters = {
     ratio:      { type: "string", description: "长宽比：1:1, 16:9, 9:16, 4:3, 3:4, 3:2, 2:3, 21:9" },
     resolution: { type: "string", description: "分辨率：2k, 4k（默认 2k）" },
     model:      { type: "string", description: "模型版本：3.0, 3.1, 4.0, 4.1, 4.5, 4.6, 5.0（默认 5.0）" },
+    negative_prompt: { type: "string", description: "负面提示词，主要用于 ComfyUI 等 workflow provider" },
     provider:   { type: "string", description: "指定 provider（可选）" },
   },
   required: ["prompt"],
@@ -31,7 +38,14 @@ export async function execute(input, ctx) {
 
   // Build adapter context
   const generatedDir = path.join(ctx.dataDir, "generated");
-  const submitCtx = { dataDir: ctx.dataDir, bus: ctx.bus, log: ctx.log, generatedDir, config: ctx.config };
+  const submitCtx = {
+    dataDir: ctx.dataDir,
+    bus: ctx.bus,
+    log: ctx.log,
+    generatedDir,
+    config: ctx.config,
+    pluginDir: ctx.pluginDir,
+  };
 
   // Resolve adapter: explicit → last registered (external adapters take over)
   const adapter = input.provider
@@ -47,10 +61,12 @@ export async function execute(input, ctx) {
   const params = {
     type: "image",
     prompt: input.prompt,
+    count: 1,
     ...(input.ratio && { ratio: input.ratio }),
     ...(input.resolution && { resolution: input.resolution }),
     ...(input.model && { model: input.model }),
     ...(input.image && { image: input.image }),
+    ...(input.negative_prompt && { negative_prompt: input.negative_prompt }),
   };
 
   // Concurrent submit

@@ -9,6 +9,11 @@ export const name = "generate-video";
 export const description =
   "根据文字描述生成视频。非阻塞：提交后立即返回，完成后自动通知。";
 
+export const promptGuidelines = [
+  "Before calling this tool, write a video prompt that includes subject, scene, camera movement, temporal change, lighting, mood, and ending state.",
+  "For image-to-video, explain what should move and what should remain stable from the reference image.",
+].join("\n");
+
 export const parameters = {
   type: "object",
   properties: {
@@ -30,7 +35,14 @@ export async function execute(input, ctx) {
 
   // Build adapter context
   const generatedDir = path.join(ctx.dataDir, "generated");
-  const submitCtx = { dataDir: ctx.dataDir, bus: ctx.bus, log: ctx.log, generatedDir, config: ctx.config };
+  const submitCtx = {
+    dataDir: ctx.dataDir,
+    bus: ctx.bus,
+    log: ctx.log,
+    generatedDir,
+    config: ctx.config,
+    pluginDir: ctx.pluginDir,
+  };
 
   // Resolve adapter: explicit → last registered (external adapters take over)
   const adapter = input.provider

@@ -58,7 +58,7 @@ export class McpStdioClient {
       capabilities: {},
       clientInfo: {
         name: "hana",
-        title: "Hana",
+        title: "Vinci",
         version: "0.1.0",
       },
     });

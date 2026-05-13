@@ -2,6 +2,9 @@ import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import fs from 'fs';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
 
 /**
  * CSP 集中管理：
@@ -134,6 +137,75 @@ function useSourceThemeInDev(): Plugin {
 }
 
 /**
+ * Vite serves source .cjs files as-is in dev, so browser ESM imports would fail
+ * on module.exports. Keep the CJS registry as the single source of truth and
+ * expose a generated ESM view for renderer-only imports.
+ */
+function themeRegistryEsmShim(): Plugin {
+  const publicId = 'virtual:hana-theme-registry-esm';
+  const virtualId = `\0${publicId}`;
+
+  return {
+    name: 'hana-theme-registry-esm-shim',
+    enforce: 'pre',
+    resolveId(source) {
+      if (source === publicId || source.split('?')[0].endsWith('theme-registry.cjs')) return virtualId;
+      return null;
+    },
+    transform(code, id) {
+      if (!id.includes('/desktop/src/') && !id.includes('\\desktop\\src\\')) return null;
+      if (!code.includes('theme-registry.cjs')) return null;
+
+      const next = code.replace(
+        /from\s+(['"])(?:\.\/theme-registry|(?:\.\.\/)+shared\/theme-registry|\/shared\/theme-registry)\.cjs(?:\?import)?\1/g,
+        `from '${publicId}'`,
+      );
+      return next === code ? null : next;
+    },
+    load(id) {
+      if (id !== virtualId) return null;
+
+      const registry = require('./desktop/src/shared/theme-registry.cjs');
+      const themeEntries = Object.entries(registry.THEMES);
+
+      return `
+const themeEntries = ${JSON.stringify(themeEntries, null, 2)};
+export const STORAGE_KEY = ${JSON.stringify(registry.STORAGE_KEY)};
+export const DEFAULT_THEME = ${JSON.stringify(registry.DEFAULT_THEME)};
+export const AUTO_LIGHT_DEFAULT = ${JSON.stringify(registry.AUTO_LIGHT_DEFAULT)};
+export const AUTO_DARK_DEFAULT = ${JSON.stringify(registry.AUTO_DARK_DEFAULT)};
+export const AUTO_OPTION = Object.freeze(${JSON.stringify(registry.AUTO_OPTION, null, 2)});
+export const LEGACY_THEME_ALIASES = Object.freeze(${JSON.stringify(registry.LEGACY_THEME_ALIASES, null, 2)});
+export const THEMES = Object.freeze(Object.fromEntries(
+  themeEntries.map(([id, entry]) => [id, Object.freeze(entry)])
+));
+
+export ${registry.migrateSavedTheme.toString()}
+export ${registry.resolveSavedTheme.toString()}
+export ${registry.getThemeIds.toString()}
+export ${registry.getAllUIOptions.toString()}
+
+const registry = Object.freeze({
+  STORAGE_KEY,
+  DEFAULT_THEME,
+  AUTO_LIGHT_DEFAULT,
+  AUTO_DARK_DEFAULT,
+  AUTO_OPTION,
+  LEGACY_THEME_ALIASES,
+  THEMES,
+  migrateSavedTheme,
+  resolveSavedTheme,
+  getThemeIds,
+  getAllUIOptions,
+});
+
+export default registry;
+`;
+    },
+  };
+}
+
+/**
  * Build 后复制旧文件到 dist-renderer/：
  * 旧 JS 模块、CSS、主题、资源、语言包等，
  * 在渐进迁移完成前还需要从 dist-renderer/ 加载。
@@ -173,6 +245,7 @@ export default defineConfig({
   plugins: [
     preserveLegacyCss(),
     react(),
+    themeRegistryEsmShim(),
     injectCsp(),
     useSourceThemeInDev(),
     restoreLegacyCss(),
